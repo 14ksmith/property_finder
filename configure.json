@@ -1,0 +1,14 @@
+{
+    "API_plan": "basic",
+    "request_frequency_per_week": 10,
+    "search_params": [{
+        "zip_code": "05401", 
+        "city": "Burlington",
+        "state": "VT"
+    }, 
+    {
+        "zip_code": "29401", 
+        "city": "Charleston", 
+        "state": "SC" 
+    }]
+}
