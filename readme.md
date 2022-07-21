@@ -2,6 +2,10 @@
 
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<img alt ="Calendar image" src="static/map.png" width="300">
 
+## Overview
+
+Property Finder is a Python program with the goal of helping people find their ideal property with ease.
+
 ## How to Use Property Finder
 
 ### Setup
