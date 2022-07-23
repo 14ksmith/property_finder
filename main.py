@@ -68,10 +68,3 @@ for property in filtered_property_results:
 #           *if it is not equal to the current date, that means it has already been seen by the user so it is not new
 
 send_email(email_body=email_formatted_property_results, server=server)
-
-
-# // {
-#     //     "city": "Charleston",
-#     //     "state": "SC",
-#     //     "limit": 5
-#     // }],
