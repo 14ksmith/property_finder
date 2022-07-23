@@ -1,12 +1,19 @@
 {
     "API_plan": "basic",
     "request_frequency_per_week": 10,
+    "email_server": "smtp.mail.yahoo.com",
     "search_params": [{ 
         "city": "Burlington",
-        "state": "VT"
+        "state": "VT",
+        "limit": 50
     }, 
     {
         "city": "Charleston", 
-        "state": "SC" 
-    }]
+        "state": "SC",
+        "limit": 50
+    }],
+    "price_limit": 8000000,
+    "home_type": "Single Family",
+    "min_num_beds": 3,
+    "min_num_baths": 2
 }
