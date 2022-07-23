@@ -52,17 +52,26 @@ for params in search_params:
             # if the result matches all of the above requirements, add it to the 'filtered_property_results' list
             filtered_property_results.append(result)
 
-email_formatted_property_results = []
+email_formatted_property_results = ""
 for property in filtered_property_results:
     property_address = property.get("formattedAddress")
     property_price = property.get("price")
     property_bedrooms = property.get("bedrooms")
     property_bathrooms = property.get("bathrooms")
     property_sq_footage = property.get("squareFootage")
-    property_zillow_link = f"https://www.zillow.com/homedetails/{property.get()}"
-    email_formatted_property_results += f"{property_address}\nPrice: {property_price}\nBedrooms: {property_bedrooms}\nBathrooms: {property_bathrooms}\nSquare Footage: {property_sq_footage}\nZillow Link: {property_zillow_link}\n\n"
+    # Have to format property id to remove city, or else the zillow link does not work
+    property_id = "".join(property.get("id").split(",")[0::2])
+    property_zillow_link = f"https://www.zillow.com/homes/{property_id}"
+    email_formatted_property_results += f"{property_address}\nPrice: ${property_price}\nBedrooms: {property_bedrooms}\nBathrooms: {property_bathrooms}\nSquare Footage: {property_sq_footage}\nZillow Link: {property_zillow_link}\n\n"
 
 # TODO: check 'lastSeen' date for each address returned in the search and if it is equal to current date, then send it in an email
 #           *if it is not equal to the current date, that means it has already been seen by the user so it is not new
 
 send_email(email_body=email_formatted_property_results, server=server)
+
+
+# // {
+#     //     "city": "Charleston",
+#     //     "state": "SC",
+#     //     "limit": 5
+#     // }],
