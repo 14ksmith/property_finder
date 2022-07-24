@@ -3,9 +3,6 @@ import smtplib
 
 
 def send_email(email_body, server):
-    # """Send email with properties that fit user paramters."""
-    # email_body = email_body.encode("ascii", "ignore")
-    # email_body = email_body.decode()
 
     with smtplib.SMTP(server, port=587) as connection:
         connection.starttls()
