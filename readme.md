@@ -4,11 +4,13 @@
 
 ## Overview
 
-Property Finder is a Python program with the goal of helping people find their ideal property with ease.
+Property Finder is a Python program with the goal of helping people find their ideal property by way of customizable search paramaters. With the help of Realty Mole API, the user can draw up to 50 properties per call.
 
 ## How to Use Property Finder
 
 ### Setup
+
+#### Settings
 
 In order to use Property Finder, first download all necessary packages by running `requirements.txt`.
 
@@ -32,7 +34,7 @@ Below is an example of the configure.json file with specified user settings:
     {
       "city": "Charleston",
       "state": "SC",
-      "limit": 30
+      "limit": 50
     }
   ],
   "price_limit": 8000000,
@@ -42,9 +44,19 @@ Below is an example of the configure.json file with specified user settings:
 }
 ```
 
+#### Email Notifications
+
+Next, to set up email notifications, follow the steps below:
+
+1. Add an email address that you want property details to be sent to. You can add this address as the value for `TO_EMAIL` in the `.env` file.
+
+2. Add the email address that will send notifications with the property details. You can add this as the value for `FROM_EMAIL` in the `.env` file. (This can be the same address as the `TO_EMAIL`, if desired).
+
+3. Add the password for the `FROM_EMAIL` by setting the value of `EMAIL_PASSWORD` in the `.env` file.
+
 ### Running Property Finder
 
-To run Property Finder, simply run `python3 main.py`.
+To run Property Finder, simply run `python3 main.py`! Property Finder will send emails with property details fitting your specifications on a schedule designed by you.
 
 #### Attributions:
 
