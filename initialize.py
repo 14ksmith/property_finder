@@ -1,10 +1,9 @@
-from dotenv import load_dotenv
 import os
 import json
 
 
 def set_api_requirements():
-    """Load the env variables from .env and set API endpoint and Key. Return API and headers in api_requirements_dict"""
+    """Set API endpoint and Key. Return API and headers in api_requirements_dict"""
 
     api_requirements_dict = dict()
 
