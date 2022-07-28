@@ -25,9 +25,9 @@ property_addresses = email_formatted_property_results(
 
 # Retrieve the properties that are already in the database
 properties_in_db = firebase.get_properties_from_db()
-print(properties_in_db)
 
-# for every address returned from the get_filtered_property_results method:
+
+# for every address returned from the email_formatted_property_results method:
 for address in property_addresses:
     # If the address is not already in the list of property addresses in the database:
     if address not in properties_in_db:

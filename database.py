@@ -16,13 +16,13 @@ class Firebase:
         return db.reference("/")
 
     def get_properties_from_db(self):
+        """Get all nodes from the 'property_addresses' child, then add the value (address) from each to the 'list_of_addresses' and retun list."""
         properties_in_db = self.rtdb.child("property_addresses").get()
         list_of_addresses = [
             properties_in_db[property_id] for property_id in properties_in_db
         ]
-        for property in properties_in_db:
-            list_of_addresses.append(properties_in_db[property])
         return list_of_addresses
 
     def add_property_to_db(self, property_address):
+        """Add the property address argument as a new node under the 'property_addresses' child."""
         self.rtdb.child("property_addresses").push(property_address)
