@@ -45,12 +45,14 @@ def get_filtered_property_results():
 
 
 def email_formatted_property_results(filtered_property_results):
-    """Send the email with the formatted property results."""
+    """Send the email with the formatted property results. Return the list of formatted property addresses."""
     # Get settings dict from get_settings_params and set as settings_dict
     settings_dict = get_settings_params()
 
     # Create empty string for where the formatted property results with go for the email body
     string_of_formatted_property_results = ""
+    # Create list of just property addresses
+    property_addresses_list = []
 
     # For each property from the filtered_property_settings...
     for property in filtered_property_results:
@@ -66,8 +68,11 @@ def email_formatted_property_results(filtered_property_results):
         property_zillow_link = f"https://www.zillow.com/homes/{property_id}"
         # how each property result should be formatted for the email
         string_of_formatted_property_results += f"{property_address}\nPrice: ${property_price}\nBedrooms: {property_bedrooms}\nBathrooms: {property_bathrooms}\nSquare Footage: {property_sq_footage}\nZillow Link: {property_zillow_link}\n\n"
+        # Add the formated property address to the list
+        property_addresses_list.append(property_address)
 
     send_email(
         email_body=string_of_formatted_property_results,
         server=settings_dict.get("server"),
     )
+    return property_addresses_list
