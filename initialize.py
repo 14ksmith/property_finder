@@ -25,17 +25,17 @@ def initialize_settings():
         return json.load(config)
 
 
-def get_settings_params():
-    """Gets property settings from configure.json and returns them as a dictionary."""
-    # Get the settings from configure.json and set to 'settings'
-    settings = initialize_settings()
-    settings_dict = dict()
-    # Get the search_params from the json file and set to 'search_params'
-    settings_dict["server"] = settings["email_server"]
-    settings_dict["search_params"] = settings["search_params"]
-    settings_dict["max_price"] = settings["price_limit"]
-    settings_dict["home_type"] = settings["home_type"]
-    settings_dict["num_beds"] = settings["min_num_beds"]
-    settings_dict["num_baths"] = settings["min_num_baths"]
+# def get_settings_params():
+#     """Gets property settings from configure.json and returns them as a dictionary."""
+#     # Get the settings from configure.json and set to 'settings'
+#     settings = initialize_settings()
+#     settings_dict = dict()
+#     # Get the search_params from the json file and set to 'search_params'
+#     settings_dict["server"] = settings["email_server"]
+#     settings_dict["search_params"] = settings["search_params"]
+#     settings_dict["max_price"] = settings["price_limit"]
+#     settings_dict["home_type"] = settings["home_type"]
+#     settings_dict["num_beds"] = settings["min_num_beds"]
+#     settings_dict["num_baths"] = settings["min_num_baths"]
 
-    return settings_dict
+#     return
