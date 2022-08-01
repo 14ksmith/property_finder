@@ -26,7 +26,7 @@ def initialize_settings():
 
 
 def get_settings_params():
-    """Gets settings from configure.json and returns them as a dictionary."""
+    """Gets property settings from configure.json and returns them as a dictionary."""
     # Get the settings from configure.json and set to 'settings'
     settings = initialize_settings()
     settings_dict = dict()

@@ -69,7 +69,16 @@ def email_formatted_property_results(filtered_property_results):
         # how each property result should be formatted for the email
         string_of_formatted_property_results += f"{property_address}\nPrice: ${property_price}\nBedrooms: {property_bedrooms}\nBathrooms: {property_bathrooms}\nSquare Footage: {property_sq_footage}\nZillow Link: {property_zillow_link}\n\n"
         # Add the formated property address to the list
-        property_addresses_list.append(property_address)
+        property_addresses_list.append(
+            {
+                "address": property_address,
+                "zillow_link": property_zillow_link,
+                "price": f"${property_price}",
+                "bedrooms": property_bedrooms,
+                "bathrooms": property_bathrooms,
+                "sq_footage": property_sq_footage,
+            }
+        )
 
     send_email(
         email_body=string_of_formatted_property_results,

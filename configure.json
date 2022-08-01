@@ -1,11 +1,11 @@
 {
-    "API_plan": "basic",
+    "monthly_request_limit": 50,
     "request_frequency_per_week": 10,
     "email_server": "smtp.mail.yahoo.com",
     "search_params": [{ 
         "city": "Charleston",
         "state": "SC",
-        "limit": 50
+        "limit": 5
     }], 
     "price_limit": 8000000,
     "home_type": "Single Family",

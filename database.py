@@ -26,3 +26,7 @@ class Firebase:
     def add_property_to_db(self, property_address):
         """Add the property address argument as a new node under the 'property_addresses' child."""
         self.rtdb.child("property_addresses").push(property_address)
+
+    def remove_property_from_database(self, UID):
+        """Delete a specific node under the 'property_addresses' child, given its UID."""
+        self.rtdb.child(f"property_addresses/{UID}").delete()
