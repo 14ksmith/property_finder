@@ -41,7 +41,7 @@ class Firebase:
 
     def update_num_api_calls_made(self, api_calls):
         """Add the api_call to the database"""
-        self.rtdb.child("api_calls").set(api_calls)
+        self.rtdb.child("api_calls").child("num_calls").set(api_calls)
 
     def remove_property_from_database(self, UID):
         """Delete a specific node under the 'property_addresses' child, given its UID."""

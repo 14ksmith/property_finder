@@ -1,32 +1,29 @@
-from unittest.mock import call
 import requests
 from initialize import initialize_settings, set_api_requirements
 from send_email import send_email
-from datetime import datetime
+
 
 config_settings = initialize_settings()
 
 
 def call_realty_mole_api(num_api_calls_in_db):
     """Make an api call for each location parameter in configure.json, as long as making the call will not overshoot the max montly calls.
-    Return a list of json results and the number of new api calls made."""
+    Return a list of json results and the updated number of total api calls made."""
 
     # Set variable for the max monthly api calls from configure.json
     max_api_calls_per_month = config_settings.get("monthly_request_limit")
-    print(type(max_api_calls_per_month))
 
     # Get the api request requirements from initialize.py
     api_requirements_dict = set_api_requirements()
 
     # Get and keep track of the number of api calls that are recorded in the database
     num_api_calls_made = num_api_calls_in_db
-    print(type(num_api_calls_made))
 
     # For each unique search paramater (location) in search_params, get the info from the api
     for params in config_settings.get("search_params"):
 
         # if the number of api calls recorded in the database plus 1 is <= max api calls per month, send the api request
-        if (num_api_calls_made + 1) <= max_api_calls_per_month:
+        if num_api_calls_made + 1 <= max_api_calls_per_month:
             # Get Realty Mole API data
             response = requests.get(
                 url=api_requirements_dict.get("realty_mole_API"),
@@ -45,7 +42,7 @@ def call_realty_mole_api(num_api_calls_in_db):
         else:
             break
 
-    return property_search_results, num_api_calls_in_db
+    return property_search_results, num_api_calls_made
 
 
 def filter_api_results(property_search_results):
@@ -57,13 +54,13 @@ def filter_api_results(property_search_results):
     for result in property_search_results:
         if (
             result.get("price") != None
-            and result.get("price") <= config_settings.get("max_price")
+            and result.get("price") <= config_settings.get("price_limit")
             and result.get("propertyType") != None
             and result.get("propertyType") == config_settings.get("home_type")
             and result.get("bedrooms") != None
-            and result.get("bedrooms") >= config_settings.get("num_beds")
+            and result.get("bedrooms") >= config_settings.get("min_num_beds")
             and result.get("bathrooms") != None
-            and result.get("bathrooms") >= config_settings.get("num_baths")
+            and result.get("bathrooms") >= config_settings.get("min_num_baths")
         ):
             # if the result matches all of the above requirements, add it to the 'filtered_property_results' list
             filtered_property_results.append(result)
@@ -107,7 +104,7 @@ def email_formatted_property_results(filtered_property_results):
 
     send_email(
         email_body=string_of_formatted_property_results,
-        server=config_settings.get("server"),
+        server=config_settings.get("email_server"),
     )
     return property_results_list
 
@@ -123,3 +120,13 @@ def api_call_schedule(current_date, api_calls_in_db):
         call_realty_mole_api = call_realty_mole_api()
         # First value in tuple returned from function is the property results, which will be set to 'filtered_property_results'
         filtered_property_results = call_realty_mole_api[0]
+
+
+data = 0
+
+new_data = data
+
+for i in range(0, 3):
+    new_data += 1
+
+print(new_data)
