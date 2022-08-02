@@ -1,6 +1,6 @@
 {
     "monthly_request_limit": 50,
-    "request_frequency_per_week": 10,
+    "hours_between_api_requests": 24,
     "email_server": "smtp.mail.yahoo.com",
     "search_params": [{ 
         "city": "Charleston",
