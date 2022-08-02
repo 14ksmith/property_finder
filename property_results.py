@@ -6,12 +6,14 @@ from datetime import datetime
 
 config_settings = initialize_settings()
 
+hours_between_api_requests = config_settings.get("hours_between_api_requests")
+
 
 def call_realty_mole_api(num_api_calls_in_db):
     """Make an api call for each location parameter in configure.json, as long as making the call will not overshoot the max montly calls.
     Return a list of json results for each param and the updated number of total api calls made."""
 
-    # Get current datetime object
+    # Get current datetime object and turn it into a string
     current_datetime_string = datetime.now().strftime("%Y-%m-%d %H:%M")
 
     # Set variable for the max monthly api calls from configure.json
