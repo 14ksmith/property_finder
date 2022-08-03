@@ -50,8 +50,13 @@ def call_realty_mole_api(num_api_calls_in_db):
             # Keep track of the number of api calls being made (1 for each search param) and add it to api_calls_in_db
             num_api_calls_made += 1
 
-        # If the number will exceede the max api calls per month, then break out of the for-loop
+        # If the number will exceede the max api calls per month, then send an email saying they have reached their limit
+        #       and break out of the for-loop
         else:
+            email_body = "You have reached your api request limit for the month."
+            send_email(
+                email_body=email_body, server=config_settings.get("email_server")
+            )
             break
 
     return all_search_results, num_api_calls_made, current_datetime_string

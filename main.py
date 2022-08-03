@@ -10,6 +10,7 @@ from property_results import (
 from datetime import datetime, timedelta
 from time import sleep
 
+
 seconds_between_api_requests = hours_between_api_requests * 60 * 60
 
 # Infinite while loop that sleeps for user designated period of time (hours converted to seconds)
