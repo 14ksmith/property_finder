@@ -12,7 +12,7 @@ from time import sleep
 
 seconds_between_api_requests = hours_between_api_requests * 60 * 60
 
-# Infinite while loop that runs the program and then sleeps for the hours designated between api calls
+# Infinite while loop that sleeps for user designated period of time (hours converted to seconds)
 while True:
 
     current_datetime = datetime.now()
@@ -67,19 +67,26 @@ while True:
         # Third value in tuple returned from funtion is the datetime object when the api calls were made
         api_call_datetime_string = call_realty_mole_api[2]
 
-        # ----------------------------- FILTER API REQUESTS --------------------------------------#
+        # ------------------------------------------------------------------------------------------------#
 
         # if api call was made and there are results in all_search_results...
         if all_search_results:
 
-            # update the time that the api calls were made to the current datetime
+            # ----------------------------- GET ADDRESSES ALREADY IN  DB --------------------------------#
+
+            # Retrieve the properties that are already in the database
+            addresses_in_db = firebase.get_addresses_from_db()
+
+            # ----------------------------- FILTER API REQUESTS --------------------------------------#
+
+            # update the time that the api calls were made to the datetime returned from call_realty_mole_api
             firebase.update_time_of_last_call(
                 api_call_datetime_string=api_call_datetime_string
             )
 
             # Run the method to filter through the api results given the params set in configure.json, and set results to filtered_property_results
             filtered_property_results = filter_api_results(
-                all_search_results=all_search_results
+                all_search_results=all_search_results, addresses_in_db=addresses_in_db
             )
 
             # ----------------------------- EMAIL FILTERED RESULTS -------------------------------------#
@@ -89,17 +96,12 @@ while True:
                 filtered_property_results=filtered_property_results
             )
 
-            # ----------------------------- GET ADDRESSES ALREADY IN  DB --------------------------------#
-
-            # Retrieve the properties that are already in the database
-            properties_in_db = firebase.get_properties_from_db()
-
             # ----------------------------- ADD NEW ADDRESSES TO  DB -------------------------------------#
 
-            # for every address and details returned from the email_formatted_property_results method:
-            for address_details in property_results:
-                # If the address and details is not already in the list of property addresses in the database:
-                if address_details not in properties_in_db:
+            # if there are results in the property_results list, do the following
+            if property_results:
+                # for every address and details returned from the email_formatted_property_results method:
+                for address_details in property_results:
                     # Add the address and details to the database
                     firebase.add_property_to_db(property_details=address_details)
 

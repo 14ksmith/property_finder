@@ -1,10 +1,10 @@
 import requests
-from initialize import initialize_settings, set_api_requirements
+from initialize import open_settings, set_api_requirements
 from send_email import send_email
 from datetime import datetime
 
 
-config_settings = initialize_settings()
+config_settings = open_settings()
 
 hours_between_api_requests = config_settings.get("hours_between_api_requests")
 
@@ -57,8 +57,8 @@ def call_realty_mole_api(num_api_calls_in_db):
     return all_search_results, num_api_calls_made, current_datetime_string
 
 
-def filter_api_results(all_search_results):
-    """Using the search params from configure.json, filter through the api results and return only those that fit within the params."""
+def filter_api_results(all_search_results, addresses_in_db):
+    """Using the search params from configure.json, filter through the api results and return only those that fit within the params and are not already in the database."""
 
     # List of property results after filtering through the user's search parameters (price, beds, baths, etc)
     filtered_property_results = []
@@ -68,7 +68,10 @@ def filter_api_results(all_search_results):
         # For each result returned for search_location
         for result in search_location:
             if (
-                result.get("price") != None
+                # The address is not already in the database...
+                result.get("formattedAddress") not in addresses_in_db
+                # and the results match the requirements outlined in configure.json...
+                and result.get("price") != None
                 and result.get("price") <= config_settings.get("price_limit")
                 and result.get("propertyType") != None
                 and result.get("propertyType") == config_settings.get("home_type")
@@ -84,41 +87,49 @@ def filter_api_results(all_search_results):
 
 
 def email_formatted_property_results(filtered_property_results):
-    """Send the email with the formatted property results. Return the list of formatted property addresses."""
+    """Send the email with the formatted property results. Return the list of formatted property results."""
 
     # Create empty string for where the formatted property results with go for the email body
-    string_of_formatted_property_results = ""
-    # Create list of just property addresses
+    email_body = ""
+    # Create list of formatted property results
     property_results_list = []
 
-    # For each property from the filtered_property_settings...
-    for property in filtered_property_results:
-        # Get all of the necessary
-        property_address = property.get("formattedAddress")
-        property_price = property.get("price")
-        property_bedrooms = property.get("bedrooms")
-        property_bathrooms = property.get("bathrooms")
-        property_sq_footage = property.get("squareFootage")
-        # Have to format property id to remove city, or else the zillow link does not work
-        property_id = "".join(property.get("id").split(",")[0::2])
-        # create the zillow link for each property from the list
-        property_zillow_link = f"https://www.zillow.com/homes/{property_id}"
-        # how each property result should be formatted for the email
-        string_of_formatted_property_results += f"{property_address}\nPrice: ${property_price}\nBedrooms: {property_bedrooms}\nBathrooms: {property_bathrooms}\nSquare Footage: {property_sq_footage}\nZillow Link: {property_zillow_link}\n\n"
-        # Add the formated property address to the list
-        property_results_list.append(
-            {
-                "address": property_address,
-                "zillow_link": property_zillow_link,
-                "price": f"${property_price}",
-                "bedrooms": property_bedrooms,
-                "bathrooms": property_bathrooms,
-                "sq_footage": property_sq_footage,
-            }
+    # If the filtered_property_results list is not empty...
+    if filtered_property_results:
+
+        # For each property from the filtered_property_settings...
+        for property in filtered_property_results:
+            # Get all of the necessary
+            property_address = property.get("formattedAddress")
+            property_price = property.get("price")
+            property_bedrooms = property.get("bedrooms")
+            property_bathrooms = property.get("bathrooms")
+            property_sq_footage = property.get("squareFootage")
+            # Have to format property id to remove city, or else the zillow link does not work
+            property_id = "".join(property.get("id").split(",")[0::2])
+            # create the zillow link for each property from the list
+            property_zillow_link = f"https://www.zillow.com/homes/{property_id}"
+            # how each property result should be formatted for the email
+            email_body += f"{property_address}\nPrice: ${property_price}\nBedrooms: {property_bedrooms}\nBathrooms: {property_bathrooms}\nSquare Footage: {property_sq_footage}\nZillow Link: {property_zillow_link}\n\n"
+            # Add the formated property results to the list
+            property_results_list.append(
+                {
+                    "address": property_address,
+                    "zillow_link": property_zillow_link,
+                    "price": f"${property_price}",
+                    "bedrooms": property_bedrooms,
+                    "bathrooms": property_bathrooms,
+                    "sq_footage": property_sq_footage,
+                }
+            )
+
+    else:
+        email_body = (
+            "There are no new property results that fit your request at this time."
         )
 
     send_email(
-        email_body=string_of_formatted_property_results,
+        email_body=email_body,
         server=config_settings.get("email_server"),
     )
     return property_results_list

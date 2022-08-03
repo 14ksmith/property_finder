@@ -13,7 +13,7 @@ class Firebase:
                 {
                     "current_month": current_month,
                     "num_calls": 0,
-                    "time_of_last_call": "",
+                    "time_of_last_call": "1000-01-01 00:00",
                 }
             )
 
@@ -23,16 +23,18 @@ class Firebase:
         initialize_app(cred, {"databaseURL": self.firebase_url})
         return db.reference("/")
 
-    def get_properties_from_db(self):
+    def get_addresses_from_db(self):
         """Get all nodes from the 'property_addresses' child, then add the value (address) from each to the 'list_of_addresses' and retun list."""
         properties_in_db = self.rtdb.child("property_listings").get()
 
         if properties_in_db == None:
             pass
+
         else:
             list_of_addresses = [
-                properties_in_db[property_id] for property_id in properties_in_db
+                properties_in_db[property]["address"] for property in properties_in_db
             ]
+
         return list_of_addresses
 
     def get_month_from_db(self):
