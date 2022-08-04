@@ -52,7 +52,6 @@ while True:
             firebase.update_month_in_db(current_month=current_month)
 
         # Get the number api calls made this month by calling get_num_api_calls_from_db
-        # TODO: if the number is at the max set in configure.json, send a email saying they have reached their max for the month
         num_api_calls_in_db = firebase.get_num_api_calls_from_db()
 
         # ----------------------------- SEND API REQUESTS --------------------------------------#
