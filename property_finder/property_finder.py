@@ -126,6 +126,33 @@ def email_formatted_property_results(filtered_property_results, email_server):
     return property_results_list
 
 
+def reset_api_usage_back_to_0(
+    current_month_number,
+    current_year,
+    current_day,
+    property_search_settings,
+):
+    """If the current day of the month is equal to the realty_mole_account_creation_day in property_search_settings.json, reset the num_calls to 0 in db.
+    If that date is not in the current month, then reset the num_calls to 0 on the last day of the month."""
+
+    # if the number of days in the month DOES include the realty mole account creation day
+    if property_search_settings in range(
+        0, monthrange(year=current_year, month=(current_month_number))[1] + 1
+    ):
+        # Update num_calls to 0 on the creation date each
+        if property_search_settings == current_day:
+            firebase.update_num_api_calls_made(0)
+
+    # if the number of days in the month does NOT include the account creation day
+    else:
+        # Update the num_calls on the last day of the month to 0
+        if (
+            current_day
+            == monthrange(year=current_year, month=(current_month_number))[1]
+        ):
+            firebase.update_num_api_calls_made(0)
+
+
 def find_properties():
     property_search_settings = Property_Search_Settings()
 
@@ -152,19 +179,13 @@ def find_properties():
             if firebase.api_month != current_month:
                 firebase.update_month_in_db(current_month=current_month)
 
-            # if the number of days in the month DOES include the realty mole account creation day
-            if property_search_settings.api_account_roll_over_day in range(
-                0, monthrange(year=current_year, month=(current_month_number))[1] + 1
-            ):
-                # Update num_calls to 0 on the creation date each
-                if property_search_settings.api_account_roll_over_day == current_day:
-                    firebase.update_num_api_calls_made(0)
-
-            # if the number of days in the month does NOT include the account creation day
-            else:
-                # Update the num_calls on the first of the month to 0
-                if current_day == 1:
-                    firebase.update_num_api_calls_made(0)
+            # If it is the correct date, set the num_calls in the database back to 0
+            reset_api_usage_back_to_0(
+                current_day=current_day,
+                current_month_number=current_month_number,
+                current_year=current_year,
+                property_search_settings=property_search_settings.api_account_roll_over_day,
+            )
 
             # run the call_realty_mole_api function, returns the results of the search and the number of new api calls made
             reality_mole_api_result = call_realty_mole_api(
