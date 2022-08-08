@@ -1,6 +1,7 @@
 
 
 {
+    "realty_mole_account_creation_day": 20,
     "monthly_request_limit": 50,
     "hours_between_api_requests": 24,
     "email_server": "smtp.mail.yahoo.com",

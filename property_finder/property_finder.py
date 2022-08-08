@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from calendar import monthrange
 from database.database import firebase
 from time import sleep
 import json
@@ -22,9 +23,14 @@ class Property_Search_Settings:
         # Multiply hours by 60 * 60 to get sleep time in seconds
         self.seconds_between_api_requests = self.hours_between_api_requests * 60 * 60
 
-        # set the monthly request limit for api calls
+        # set the monthly request limit for api calls variable
         self.monthly_request_limit = property_search_settings.get(
             "monthly_request_limit"
+        )
+
+        # set the realty mole account creation day variable
+        self.api_account_roll_over_day = property_search_settings.get(
+            "realty_mole_account_creation_day"
         )
 
         # initialize the search params
@@ -128,6 +134,9 @@ def find_properties():
         # Get the current month to track how many api calls have been made to the property api this month.
         current_datetime = datetime.now()
         current_month = current_datetime.strftime("%B")
+        current_month_number = int(current_datetime.strftime("%m"))
+        current_day = int(current_datetime.strftime("%d"))
+        current_year = int(current_datetime.strftime("%Y"))
 
         # Get the datetime object of when the last api call was made from the database from the local variable
         datetime_of_last_api_call = firebase.time_of_last_api_call_in_db
@@ -142,6 +151,20 @@ def find_properties():
             # if the month in the database local variable does not equal the current month, then update the month in the db
             if firebase.api_month != current_month:
                 firebase.update_month_in_db(current_month=current_month)
+
+            # if the number of days in the month DOES include the realty mole account creation day
+            if property_search_settings.api_account_roll_over_day in range(
+                0, monthrange(year=current_year, month=(current_month_number))[1] + 1
+            ):
+                # Update num_calls to 0 on the creation date each
+                if property_search_settings.api_account_roll_over_day == current_day:
+                    firebase.update_num_api_calls_made(0)
+
+            # if the number of days in the month does NOT include the account creation day
+            else:
+                # Update the num_calls on the first of the month to 0
+                if current_day == 1:
+                    firebase.update_num_api_calls_made(0)
 
             # run the call_realty_mole_api function, returns the results of the search and the number of new api calls made
             reality_mole_api_result = call_realty_mole_api(

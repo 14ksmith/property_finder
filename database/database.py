@@ -47,12 +47,11 @@ class Firebase:
             self.time_of_last_api_call_in_db = self.get_time_of_last_api_call()
 
     def initialize_connection(self):
-        # initialize connection through a service account
+        """Initialize connection through a service account."""
         cred = credentials.Certificate(self.path_to_service_account)
         initialize_app(cred, {"databaseURL": self.firebase_url})
         return db.reference("/")
 
-    # TODO: Cache this locally and then when adding new addresses, update the local value too
     def get_addresses_from_db(self):
         """Get all nodes from the 'property_addresses' child, then add the value (address) from each to the 'list_of_addresses' and retun list."""
         properties_in_db = self.rtdb.child("property_listings").get()
@@ -66,10 +65,6 @@ class Firebase:
             ]
 
         return list_of_addresses
-
-    def get_addresses_from_local_storage(self):
-        """Get all addresses that are in the database, stored in the local cache ."""
-        return self.stored_addresses
 
     def get_month_from_db(self):
         """Get the month for which the api calls are being tracked in the db."""
