@@ -1,9 +1,10 @@
 from dotenv import load_dotenv
 from property_finder.property_finder import find_properties
+import asyncio
+from aiohttp import ClientSession
 
 
 if __name__ == "__main__":
-    # TODO: make sure this runs before anything else like imported files that run when imported
     # load environment variables from .env
     load_dotenv()
 

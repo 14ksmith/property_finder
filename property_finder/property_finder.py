@@ -6,6 +6,7 @@ import json
 from notifications.email import send_email
 from datetime import datetime
 from property_finder.property_api import call_realty_mole_api
+import asyncio
 
 
 class Property_Search_Settings:
@@ -135,7 +136,7 @@ def reset_api_usage_back_to_0(
     """If the current day of the month is equal to the realty_mole_account_creation_day in property_search_settings.json, reset the num_calls to 0 in db.
     If that date is not in the current month, then reset the num_calls to 0 on the last day of the month."""
 
-    # if the number of days in the month DOES include the realty mole account creation day
+    # if the number of days in the month DOES include the realty mole api account creation day
     if property_search_settings in range(
         0, monthrange(year=current_year, month=(current_month_number))[1] + 1
     ):
@@ -143,9 +144,9 @@ def reset_api_usage_back_to_0(
         if property_search_settings == current_day:
             firebase.update_num_api_calls_made(0)
 
-    # if the number of days in the month does NOT include the account creation day
+    # if the number of days in the month does NOT include the api account creation day
     else:
-        # Update the num_calls on the last day of the month to 0
+        # Update the num_calls to 0 on the last day of the month
         if (
             current_day
             == monthrange(year=current_year, month=(current_month_number))[1]
@@ -188,11 +189,13 @@ def find_properties():
             )
 
             # run the call_realty_mole_api function, returns the results of the search and the number of new api calls made
-            reality_mole_api_result = call_realty_mole_api(
-                num_api_calls_in_db=firebase.number_of_api_calls_in_current_month,
-                monthly_request_limit=property_search_settings.monthly_request_limit,
-                search_params=property_search_settings.search_params,
-                email_server=property_search_settings.email_server,
+            reality_mole_api_result = asyncio.run(
+                call_realty_mole_api(
+                    num_api_calls_in_db=firebase.number_of_api_calls_in_current_month,
+                    monthly_request_limit=property_search_settings.monthly_request_limit,
+                    search_params=property_search_settings.search_params,
+                    email_server=property_search_settings.email_server,
+                )
             )
 
             # First value in tuple returned from function is the property results, which will be set to 'filtered_property_results'

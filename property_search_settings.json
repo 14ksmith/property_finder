@@ -9,7 +9,17 @@
         "city": "Burlington",
         "state": "VT",
         "limit": 5
-    }], 
+    }, 
+    { 
+        "city": "Charlestion",
+        "state": "SC",
+        "limit": 5
+    }, 
+    { 
+        "city": "Juneau",
+        "state": "AL",
+        "limit": 5
+    }],
     "price_limit": 8000000,
     "home_type": "Single Family",
     "min_num_beds": 1,
