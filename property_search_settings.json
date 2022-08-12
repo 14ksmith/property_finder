@@ -6,9 +6,9 @@
     "hours_between_api_requests": 24,
     "email_server": "smtp.mail.yahoo.com",
     "search_params": [{ 
-        "city": "Burlington",
-        "state": "VT",
-        "limit": 5
+        "city": "Austin",
+        "state": "TX",
+        "limit": 50
     }], 
     "price_limit": 8000000,
     "home_type": "Single Family",

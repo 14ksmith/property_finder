@@ -86,7 +86,7 @@ class Firebase:
         )
         return datetime_of_last_api_call
 
-    def add_property_to_db(self, property_details):
+    async def add_property_to_db(self, property_details):
         """Add the property address and details as a new node under the 'property_listings' child,
         and add JUST the address to the local variable stored_addresses"""
         self.rtdb.child("property_listings").push(property_details)
