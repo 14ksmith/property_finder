@@ -6,6 +6,7 @@ import json
 from notifications.email import send_email
 from datetime import datetime
 from property_finder.property_api import call_realty_mole_api
+import asyncio
 
 
 class Property_Search_Settings:
@@ -56,8 +57,10 @@ def filter_api_results(
 
     # For each location in all_search_results
     for search_location in all_search_results:
+        print(search_location)
         # For each result returned for search_location
         for result in search_location:
+            print(result)
             if (
                 # The address is not already in the database...
                 result.get("formattedAddress") not in addresses_in_db
@@ -135,7 +138,7 @@ def reset_api_usage_back_to_0(
     """If the current day of the month is equal to the realty_mole_account_creation_day in property_search_settings.json, reset the num_calls to 0 in db.
     If that date is not in the current month, then reset the num_calls to 0 on the last day of the month."""
 
-    # if the number of days in the month DOES include the realty mole account creation day
+    # if the number of days in the month DOES include the realty mole api account creation day
     if property_search_settings in range(
         0, monthrange(year=current_year, month=(current_month_number))[1] + 1
     ):
@@ -143,9 +146,9 @@ def reset_api_usage_back_to_0(
         if property_search_settings == current_day:
             firebase.update_num_api_calls_made(0)
 
-    # if the number of days in the month does NOT include the account creation day
+    # if the number of days in the month does NOT include the api account creation day
     else:
-        # Update the num_calls on the last day of the month to 0
+        # Update the num_calls to 0 on the last day of the month
         if (
             current_day
             == monthrange(year=current_year, month=(current_month_number))[1]
@@ -153,7 +156,7 @@ def reset_api_usage_back_to_0(
             firebase.update_num_api_calls_made(0)
 
 
-def find_properties():
+async def find_properties():
     property_search_settings = Property_Search_Settings()
 
     # Infinite while loop that sleeps for user designated period of time (hours converted to seconds)
@@ -188,7 +191,7 @@ def find_properties():
             )
 
             # run the call_realty_mole_api function, returns the results of the search and the number of new api calls made
-            reality_mole_api_result = call_realty_mole_api(
+            realty_mole_api_result = call_realty_mole_api(
                 num_api_calls_in_db=firebase.number_of_api_calls_in_current_month,
                 monthly_request_limit=property_search_settings.monthly_request_limit,
                 search_params=property_search_settings.search_params,
@@ -196,14 +199,14 @@ def find_properties():
             )
 
             # First value in tuple returned from function is the property results, which will be set to 'filtered_property_results'
-            all_search_results = reality_mole_api_result[0]
+            all_search_results = realty_mole_api_result[0]
 
             # Update the total number of api calls made this month to the database
             #       Second value in tuple returned from function is the number of total calls made to the api for the month
-            firebase.update_num_api_calls_made(reality_mole_api_result[1])
+            firebase.update_num_api_calls_made(realty_mole_api_result[1])
 
             # Third value in tuple returned from funtion is the datetime object when the api calls were made
-            api_call_datetime_string = reality_mole_api_result[2]
+            api_call_datetime_string = realty_mole_api_result[2]
 
             # if api call was made and there are results in all_search_results...
             if all_search_results:
@@ -231,10 +234,22 @@ def find_properties():
 
                 # if there are results in the property_results list, do the following
                 if property_results:
+
+                    # add a list of coroutines to complete
+                    tasks = []
+
                     # for every address and details returned from the email_formatted_property_results method:
                     for address_details in property_results:
+                        # append the add_property_to_db async function to the list of tasks
                         # Add the address and details to the database
-                        firebase.add_property_to_db(property_details=address_details)
+                        tasks.append(
+                            firebase.add_property_to_db(
+                                property_details=address_details
+                            )
+                        )
+
+                    # execute all the tasks and wait for them to complete
+                    asyncio.wait(tasks)
 
         # Sleep the program for the designated time between api calls
         sleep(property_search_settings.seconds_between_api_requests)
