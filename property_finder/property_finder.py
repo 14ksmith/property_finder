@@ -9,7 +9,7 @@ from property_finder.property_api import call_realty_mole_api
 import asyncio
 
 
-class Property_Search_Settings:
+class PropertySearchSettings:
     def __init__(self):
 
         # Get the settings from the property search settings json
@@ -48,7 +48,7 @@ class Property_Search_Settings:
 def filter_api_results(
     all_search_results,
     addresses_in_db,
-    property_search_settings: Property_Search_Settings,
+    property_search_settings: PropertySearchSettings,
 ):
     """Using the search params from property_search_settings.json, filter through the api results and return only those that fit within the params and are not already in the database."""
 
@@ -157,7 +157,7 @@ def reset_api_usage_back_to_0(
 
 
 async def find_properties():
-    property_search_settings = Property_Search_Settings()
+    property_search_settings = PropertySearchSettings()
 
     # Infinite while loop that sleeps for user designated period of time (hours converted to seconds)
     while True:

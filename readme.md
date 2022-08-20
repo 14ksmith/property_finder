@@ -1,6 +1,8 @@
 # Property Finder
 
-&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<img alt ="Calendar image" src="assets/map.png" width="300">
+<p align="center">
+  <img alt ="Calendar Image" src="assets/map.png" width="300">
+</p>
 
 ## Overview
 
