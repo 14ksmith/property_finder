@@ -6,8 +6,8 @@
     "hours_between_api_requests": 24,
     "email_server": "smtp.mail.yahoo.com",
     "search_params": [{ 
-        "city": "Burlington",
-        "state": "VT",
+        "city": "Philadelphia",
+        "state": "PA",
         "limit": 5
     }], 
     "price_limit": 8000000,
