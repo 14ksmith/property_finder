@@ -14,7 +14,7 @@ Property Finder is a Python program with the goal of helping people find their i
 
 #### Settings
 
-In order to use Property Finder, first download all necessary packages by running `requirements.txt`.
+In order to use Property Finder, first download all necessary packages by running `pip3 install -r requirements.txt`.
 
 Then sign up for the Realty Mole Property plan of your choice on www.rapidapi.com. There are different tiers of payment with an increasing number of request limits for each plan, so choose which one will best fit your needs!
 
