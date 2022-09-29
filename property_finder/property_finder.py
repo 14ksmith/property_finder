@@ -103,7 +103,7 @@ def email_formatted_property_results(filtered_property_results, email_server):
             property_zillow_link = f"https://www.zillow.com/homes/{property_id}"
             # how each property result should be formatted for the email, and add it to 'email_body'
             email_body += f"{property_address}\nPrice: ${property_price}\nBedrooms: {property_bedrooms}\nBathrooms: {property_bathrooms}\nSquare Footage: {property_sq_footage}\nZillow Link: {property_zillow_link}\n\n"
-            # Add the formated property results to the list
+            # Add the formatted property results to the list
             property_results_list.append(
                 {
                     "address": property_address,
@@ -130,17 +130,17 @@ def reset_api_usage_back_to_0(
     current_month_number,
     current_year,
     current_day,
-    property_search_settings,
+    roll_over_day,
 ):
     """If the current day of the month is equal to the realty_mole_account_creation_day in property_search_settings.json, reset the num_calls to 0 in db.
     If that date is not in the current month, then reset the num_calls to 0 on the last day of the month."""
 
     # if the number of days in the month DOES include the realty mole account creation day
-    if property_search_settings in range(
+    if roll_over_day in range(
         0, monthrange(year=current_year, month=(current_month_number))[1] + 1
     ):
-        # Update num_calls to 0 on the creation date each
-        if property_search_settings == current_day:
+        # Update num_calls to 0 on the creation date each month
+        if roll_over_day == current_day:
             firebase.update_num_api_calls_made(0)
 
     # if the number of days in the month does NOT include the account creation day
@@ -179,12 +179,12 @@ def find_properties():
             if firebase.api_month != current_month:
                 firebase.update_month_in_db(current_month=current_month)
 
-            # If it is the correct date, set the num_calls in the database back to 0
+            # Check if current date equals roll over date and if so, set the num_calls in the database back to 0
             reset_api_usage_back_to_0(
                 current_day=current_day,
                 current_month_number=current_month_number,
                 current_year=current_year,
-                property_search_settings=property_search_settings.api_account_roll_over_day,
+                roll_over_day=property_search_settings.api_account_roll_over_day,
             )
 
             # run the call_realty_mole_api function, returns the results of the search and the number of new api calls made
@@ -195,14 +195,14 @@ def find_properties():
                 email_server=property_search_settings.email_server,
             )
 
-            # First value in tuple returned from function is the property results, which will be set to 'filtered_property_results'
+            # First value in tuple returned from function is the property results, which will be set to 'all_search_results'
             all_search_results = reality_mole_api_result[0]
 
             # Update the total number of api calls made this month to the database
             #       Second value in tuple returned from function is the number of total calls made to the api for the month
             firebase.update_num_api_calls_made(reality_mole_api_result[1])
 
-            # Third value in tuple returned from funtion is the datetime object when the api calls were made
+            # Third value in tuple returned from function is the datetime object when the api calls were made
             api_call_datetime_string = reality_mole_api_result[2]
 
             # if api call was made and there are results in all_search_results...
@@ -223,7 +223,7 @@ def find_properties():
                     property_search_settings=property_search_settings,
                 )
 
-                # Email the filtered property results, and set the addresses returned from this function to 'property_addresses'
+                # Email the filtered property results, and set the addresses returned from this function to 'property_results'
                 property_results = email_formatted_property_results(
                     filtered_property_results=filtered_property_results,
                     email_server=property_search_settings.email_server,

@@ -13,7 +13,7 @@ class Firebase:
         current_datetime = datetime.now()
         current_month = current_datetime.strftime("%B")
 
-        # Set the variables necessary for real time database initalization
+        # Set the variables necessary for real time database initialization
         self.firebase_url = os.getenv("FIREBASE_RTDB_URL")
         self.path_to_service_account = os.getenv("PATH_TO_FIREBASE_SERVICE_ACCOUNT")
 
